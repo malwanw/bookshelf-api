@@ -6,7 +6,7 @@ const addBookHandler = (request, h) => {
     name, year, author, summary, publisher, pageCount, readPage, reading,
   } = request.payload;
   const id = nanoid(16);
-  let finished = false;
+  let finished;
   if (pageCount === readPage) {
     finished = true;
   } else {
@@ -65,16 +65,87 @@ const addBookHandler = (request, h) => {
   return response;
 }
 };
-const getAllBooksHandler = () => ({
-  status: 'success',
-  data: {
+const getAllBooksHandler = (request, h) => {
+  const {reading, name, finished} = request.query;
+ 
+  if(name !== undefined){
+    const book = books.filter((book) => book.name.toLowerCase().search(name.toLowerCase()) >= 0);
+    return {
+      status: 'success',
+      data: {
+        books:book.map((book) =>({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
+      },
+    };
+  }
+  if(reading !== undefined){
+    if (reading == 0) {
+      const book = books.filter((book) => book.reading === false);
+      return {
+        status: 'success',
+        data: {
+          books:book.map((book) =>({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
+        },
+      };
+    }else if(reading == 1){
+      const book = books.filter((book) => book.reading === true);
+      return {
+        status: 'success',
+        data: {
+          books:book.map((book) =>({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
+        },
+      };
+    }
+  }
+  if(finished !== undefined){
+    if (finished == 0) {
+      const book = books.filter((book) => book.finished === false);
+      return {
+        status: 'success',
+        data: {
+          books:book.map((book) =>({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
+        },
+      };
+    }else if(finished == 1){
+      const book = books.filter((book) => book.finished === true);
+      return {
+        status: 'success',
+        data: {
+          books:book.map((book) =>({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
+        },
+      };
+    }
+  }
+  return{
+    status: 'success',
+    data: {
     books:books.map((book)=>({
-      id: book.id,
-      name: book.name,
-      publisher: book.publisher,
-    })),
-  },
-});
+       id: book.id,
+       name: book.name,
+       publisher: book.publisher,
+     })),
+   },
+  }
+};
 const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
   const book = books.filter((book) => book.id === id)[0];

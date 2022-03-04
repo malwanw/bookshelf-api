@@ -106,6 +106,13 @@ const getAllBooksHandler = (request, h) => {
           })),
         },
       };
+    }else{
+      const response = h.response({
+        status: 'fail',
+        message: 'Nilai reading harus 0 atau 1',
+      });
+      response.code(400);
+      return response;
     }
   }
   if(finished !== undefined){
@@ -133,6 +140,13 @@ const getAllBooksHandler = (request, h) => {
           })),
         },
       };
+    }else{
+      const response = h.response({
+        status: 'fail',
+        message: 'Nilai finished harus 0 atau 1',
+      });
+      response.code(400);
+      return response;
     }
   }
   return{
